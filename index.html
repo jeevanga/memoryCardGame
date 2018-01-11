@@ -1,51 +1,43 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Matching Game</title>
-    <meta name="description" content="">
-    <link rel="stylesheet prefetch" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
-    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Coda">
-    <link rel="stylesheet" href="css/app.css">
+  <meta charset="utf-8">
+  <title>Matching Game</title>
+  <meta name="description" content="">
+  <link rel="stylesheet prefetch" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+  <!--<link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Coda"> -->
+  <link rel="stylesheet" href="css/app.css">
 </head>
-<body>
+<body class="primary-background">
 
-  <!-- http://fontawesome.io/cheatsheet/ - fa refers to Font Awesome
-  - font and icon toolkit. You can place Font Awesome icons just about
-  anywhere using the CSS Prefix [fa] and the icon's name. Font Awesome
-  is designed to be used with inline elements - <i> tag. -->
 
-    <div class="container">
-        <header>
-            <h1>Matching Game</h1>
-        </header>
-<div id="dialog-message" title="CONGRATULATIONS, NICELY DONE!">
+        <!-- http://fontawesome.io/cheatsheet/ - fa refers to Font Awesome
+        - font and icon toolkit. You can place Font Awesome icons just about
+        anywhere using the CSS Prefix [fa] and the icon's name. Font Awesome
+        is designed to be used with inline elements - <i> tag. -->
 
-    <span>Time :</span>
-       
-      
-           <span>Moves :</span>
-       
-       
-           <span> Stars :</span> 
-        
-</div>
-        <section class="score-panel">
-        	<ul class="stars">
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
-        		<li><i class="fa fa-star"></i></li>
-        	</ul>
+        <div class="container">
+          <header>
+            <h1>CARD MATCHING GAME</h1>
+          </header>
 
-        	<span class="moves">3</span> Moves
+          <section class="score-panel">
+            <ul class="stars">
+              <li><i class="fa fa-star"></i></li>
+              <li><i class="fa fa-star"></i></li>
+              <li><i class="fa fa-star"></i></li>
+            </ul>
 
-            <div class="restart">
-        		<i class="fa fa-repeat"></i>
-        	</div>
-        </section>
+            <span class="moves">0</span> Moves
+            <span class="timer">00:00:00</span>
+            <div class="restart"> RESTART
+              <i class="fa fa-repeat"></i>
+            </div>
+          </section>
 
-    </div>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="js/app.js"></script>
+        </div>
+    
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
