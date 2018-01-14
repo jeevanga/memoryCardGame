@@ -8,19 +8,31 @@ html {
     box-sizing: inherit;
 }
 
-html,
+/*html,
 body {
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
 }
-
+/*
 body {
     background: #ffffff url('../img/geometry2.png'); /* Background pattern from Subtle Patterns */
-    font-family: 'Coda', cursive;
+  /*  font-family: 'Coda', cursive;
 }
-
+*/
+body {
+    padding-top: 20px;
+}
+/* Background image manipulation starts here; image is copyright of Matt W Moore */
+/* Index screen background assignment here */
+.primary-background {
+  background-image: url("primary-bg.jpg");
+  max-width: 100%;
+  height: auto;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 .container {
     display: flex;
     justify-content: center;
@@ -28,11 +40,21 @@ body {
     flex-direction: column;
 }
 
-h1 {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 300;
+.container-header {
+
+    font-family: "Guardian Egyptian Headline", Georgia, serif;
+    font-size: 25px;
+    text-align: center;
+    color: white;
+
+    flex-wrap: wrap;
+
 }
 
+h2, p, span {
+   font-family: "Guardian Egyptian Text", Georgia, serif;
+   line-height: 1.5
+}
 /*
  * Styles for the deck of cards
  */
@@ -81,6 +103,7 @@ h1 {
 }
 
 
+
 .deck .card.show {
     font-size: 33px;
 }
@@ -91,13 +114,48 @@ h1 {
     font-size: 33px;
 }
 
+
+.modal {
+    display: none;
+    top : 0;
+    right : 0;
+    bottom : 0;
+    left : 0;
+    position: fixed;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+    max-width: 360px;
+    padding : 40px;
+    margin: 5em auto;
+    border-radius: 10px;
+    background-color: cyan;
+
+}
+
+.modal-title {
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+    font-weight: 400;
+}
+
+
+.modal-message {
+    font-size: 1.5em;
+    font-weight: 25;
+    text-align: center;
+}
+
+
 /*
  * Styles for the Score Panel
  */
 
 .score-panel {
-    text-align: left;
-    width: 345px;
+    text-align: center;
+    width: 500px;
     margin-bottom: 10px;
 }
 
@@ -108,8 +166,11 @@ h1 {
     margin: 0 5px 0 0;
 }
 
-.score-panel .stars li {
+.score-panel .stars li,
+ .modal .modal-content .modal-star-display-element {
     list-style: none;
+    color: gold;
+    line-height: 25px;
     display: inline-block;
 }
 
