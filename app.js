@@ -27,6 +27,38 @@ $(document).ready(function () {
     }
     return array;
   }
+
+  function timeElapsedPadding(timeInterval) {
+    return ((timeInterval < 10 ? "0" : "") + timeInterval);
+  }
+
+  function timeElapsedString(timeElapsedInSeconds) {
+    var hours = Math.floor(timeElapsedInSeconds / 3600);
+    timeElapsedInSeconds= timeElapsedInSeconds % 3600;
+
+    var minutes = Math.floor(timeElapsedInSeconds / 60);
+    timeElapsedInSeconds = timeElapsedInSeconds % 60;
+
+    var seconds = Math.floor(timeElapsedInSeconds);
+
+    // Pad the minutes and seconds with leading zeros, if required
+    hours = timeElapsedPadding(hours);
+    minutes = timeElapsedPadding(minutes);
+    seconds = timeElapsedPadding(seconds);
+
+    // Compose the string for display
+    var currentTimeString = hours + ":" + minutes + ":" + seconds;
+
+    return currentTimeString;
+  }
+
+  function modalDisplayParameters() {
+    $('.stars').clone().appendTo($('.modal-star-display-element'));
+    $('.moves').clone().appendTo($('.modal-move-counter-element'));
+    $('.timer').clone().appendTo($('.modal-timer-element'));
+  }
+
+
   var shuffledCards =[];
   shuffledCards = shuffle(deckOfCards);
   // Creating the HTML element titled "deck" which contains all the cards
@@ -60,8 +92,14 @@ $(document).ready(function () {
   var cardsTurnedOver = 0;
   var numberOfMoves = 0;
   var numberOfCardsDisplayed = 0;
+  var timeElapsedInSeconds = 0;
   //Event handler function to flip open a card when clicked.
   $('.card').click(function (event) {
+    var timerStart = setInterval(function() {
+      timeElapsedInSeconds += 1;
+      $('.score-panel .timer').text(timeElapsedString(timeElapsedInSeconds));
+    }, 1000);
+
     // Conditional loop to ensure that:
     // (a) no more than 2 cards are opened at a given time;
     // (b) the card selected is not already turned over i.e. has
@@ -113,6 +151,7 @@ $(document).ready(function () {
           cardsTurnedOver =0;
           // Conditional statement following on from card equality check above;
           // if the cards do not match then they will be flipped over.
+          $('.moves').text(numberOfMoves);
         }
         else {
           setTimeout(function(){
@@ -131,25 +170,20 @@ $(document).ready(function () {
             // The 'cardsTurnedOver' variable is re-initialised for the next iteration
             // of card selection.
             cardsTurnedOver =0;
+            $('.moves').text(numberOfMoves);
           }, 600);
 
         }
 
       }
+      if (numberOfCardsDisplayed === shuffledCards.length){
 
-
-    }
-  
-  if (numberOfCardsDisplayed === shuffledCards.length){
-    $( function() {
-    $( "#dialog-message" ).dialog({
-      modal: true,
-      buttons: {
-        Ok: function() {
-          $( this ).dialog( "close" );
-        }
+        clearInterval(timerStart);
+        $('.modal').css('display','block');
+        modalDisplayParameters();
       }
-    });
-  } );
-  }
+
+
+    }});
+
   });
