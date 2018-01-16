@@ -32,15 +32,20 @@ $(document).ready(function () {
     return ((timeInterval < 10 ? "0" : "") + timeInterval);
   }
 
-  function timeElapsedString(timeElapsedInSeconds) {
-    var hours = Math.floor(timeElapsedInSeconds / 3600);
-    timeElapsedInSeconds= timeElapsedInSeconds % 3600;
+  function timeElapsedString(startedTime, presentTime ) {
+    
+    var timeElapsedInSeconds = Math.floor((presentTime - startedTime)/1000); 
+    // calculate hours                
+            var hours = parseInt(timeElapsedInSeconds/3600);
 
-    var minutes = Math.floor(timeElapsedInSeconds / 60);
-    timeElapsedInSeconds = timeElapsedInSeconds % 60;
+            // calculate minutes
+            var minutes = parseInt(timeElapsedInSeconds/60);
+            if (minutes > 60) {minutes %= 60;}
 
-    var seconds = Math.floor(timeElapsedInSeconds);
-
+            // calculate seconds
+            var seconds = parseInt(timeElapsedInSeconds/1000);
+            if (seconds > 60) {seconds %= 60;}
+    
     // Pad the minutes and seconds with leading zeros, if required
     hours = timeElapsedPadding(hours);
     minutes = timeElapsedPadding(minutes);
@@ -92,13 +97,16 @@ $(document).ready(function () {
   var cardsTurnedOver = 0;
   var numberOfMoves = 0;
   var numberOfCardsDisplayed = 0;
-  var timeElapsedInSeconds = 0;
+  
   //Event handler function to flip open a card when clicked.
   $('.card').click(function (event) {
-    var timerStart = setInterval(function() {
-      timeElapsedInSeconds += 1;
-      $('.score-panel .timer').text(timeElapsedString(timeElapsedInSeconds));
-    }, 1000);
+    if (numberOfMoves === 0) {
+    var startTime = new Date().getTime(); 
+    }
+    var timer = setInterval(function() {
+      var timeNow = new Date().getTime();
+      $('.score-panel .timer').text(timeElapsedString(startTime, timeNow));
+    }, 25);
 
     // Conditional loop to ensure that:
     // (a) no more than 2 cards are opened at a given time;
@@ -176,9 +184,20 @@ $(document).ready(function () {
         }
 
       }
+      
+      // Star rating
+    if (numberOfMoves >16 && numberOfMoves < 25) {
+    var thirdStarBlack =$('.stars').find('li').eq(2);
+    thirdStarBlack.css('color','black');
+    }
+    if (numberOfMoves > 25) {
+    var secondStarBlack =$('.stars').find('li').eq(1);
+    secondStarBlack.css('color','black');
+    }
       if (numberOfCardsDisplayed === shuffledCards.length){
+        
 
-        clearInterval(timerStart);
+        clearInterval(timer);
         $('.modal').css('display','block');
         modalDisplayParameters();
       }
