@@ -27,42 +27,47 @@ $(document).ready(function () {
     }
     return array;
   }
+  // setStopwatch() function used to format time elapsed with zero's where
+  // needed. Accepts the relevant time interval in either hours, minutes,
+  // or seconds and formats it accordingly.
 
-  function timeElapsedPadding(timeInterval) {
+  function setStopwatch(timeInterval) {
     return ((timeInterval < 10 ? "0" : "") + timeInterval);
   }
-
-  function timeElapsedString(startedTime, presentTime ) {
-    
-    var timeElapsedInSeconds = Math.floor((presentTime - startedTime)/1000); 
-    // calculate hours                
-            var hours = parseInt(timeElapsedInSeconds/3600);
-
-            // calculate minutes
-            var minutes = parseInt(timeElapsedInSeconds/60);
-            if (minutes > 60) {minutes %= 60;}
-
-            // calculate seconds
-            var seconds = parseInt(timeElapsedInSeconds/1000);
-            if (seconds > 60) {seconds %= 60;}
-    
-    // Pad the minutes and seconds with leading zeros, if required
-    hours = timeElapsedPadding(hours);
-    minutes = timeElapsedPadding(minutes);
-    seconds = timeElapsedPadding(seconds);
-
-    // Compose the string for display
-    var currentTimeString = hours + ":" + minutes + ":" + seconds;
-
-    return currentTimeString;
+  // runTimer() function used to determine how much time has elapsed since game
+  // play has commenced. runTimer() returns the time elapsed in the ttext format:
+  // HOURS : MINUTES : SECONDS for eg: 00:01:07.
+  function runTimer() {
+    // Using Date.now() to get current timestamp
+    var startTime = Date.now();
+    // declaring setInterval fucntion variable timer which will run every 1000
+    // milliseconds or 1 second.
+    timer = setInterval(function () {
+      var timeElapsed = Date.now() - startTime;
+      console.log("time elapsed:", timeElapsed);
+      hoursFormatted = setStopwatch(Math.floor(timeElapsed / 3600000));
+      minutesFormatted = setStopwatch(Math.floor(((timeElapsed / 60000)) % 60));
+      secondsFormatted = setStopwatch(Math.floor(((timeElapsed / 1000)) % 60));
+      console.log("hours formatted:", hoursFormatted);
+      console.log("minutes formatted:", minutesFormatted);
+      console.log("seconds formatted:", secondsFormatted);
+      // Compose the string for display
+      var currentTimeString = hoursFormatted + ":" + minutesFormatted + ":" + secondsFormatted;
+      console.log("time formatted:", currentTimeString);
+      return currentTimeString;
+    }, 1000);
   }
-
+  // modalDisplayParameters() function that is used to display the star rating,
+  // number of moves counter, time taken to complete game and finally restart
+  // all in one popup i.e. the congratulations popup.
   function modalDisplayParameters() {
-    $('.stars').clone().appendTo($('.modal-star-display-element'));
+    $('.stars li').clone().appendTo($('.modal-star-display-element'));
     $('.moves').clone().appendTo($('.modal-move-counter-element'));
     $('.timer').clone().appendTo($('.modal-timer-element'));
+    $('.modal message').click(function(){
+      location.reload();
+    });
   }
-
 
   var shuffledCards =[];
   shuffledCards = shuffle(deckOfCards);
@@ -92,21 +97,19 @@ $(document).ready(function () {
   // (d) numberOfMoves: Variable used to indicate number of moves made while playing
   //     the game.
   // (e) numberOfCardsDisplayed: Variable used to indicate the number of cards displayed.
+  // (f) Pre-fdefinition of the secondsFormatted, minutesFormatted and
+  //     hoursFormatted variables used to store related formatted quantities.
   var displayedCards = [];
   var cardDeckPosition = [];
   var cardsTurnedOver = 0;
   var numberOfMoves = 0;
   var numberOfCardsDisplayed = 0;
-  
+  var secondsFormatted, minutesFormatted, hoursFormatted;
+
   //Event handler function to flip open a card when clicked.
   $('.card').click(function (event) {
-    if (numberOfMoves === 0) {
-    var startTime = new Date().getTime(); 
-    }
-    var timer = setInterval(function() {
-      var timeNow = new Date().getTime();
-      $('.score-panel .timer').text(timeElapsedString(startTime, timeNow));
-    }, 25);
+    // Simultaneously calls runTimer() function and displays its output.
+    $('.score-panel .timer').text(runTimer());
 
     // Conditional loop to ensure that:
     // (a) no more than 2 cards are opened at a given time;
@@ -184,20 +187,33 @@ $(document).ready(function () {
         }
 
       }
-      
-      // Star rating
-    if (numberOfMoves >16 && numberOfMoves < 25) {
-    var thirdStarBlack =$('.stars').find('li').eq(2);
-    thirdStarBlack.css('color','black');
-    }
-    if (numberOfMoves > 25) {
-    var secondStarBlack =$('.stars').find('li').eq(1);
-    secondStarBlack.css('color','black');
-    }
-      if (numberOfCardsDisplayed === shuffledCards.length){
-        
+      // Click handler function to reload the game while in progress.
+      $('.restart').click(function(){
+        location.reload();
+      });
+      // Conditional loops to determine star ratings dependent on number of
+      // moves taken to complete game.
+      // (a) If number of moves are between 16 and 25: 2 star rating,
+      // (b) If number of moves are greater than 25: 1 star rating.
+      // The stars are all initially activated i.e. they are all set at gold
+      // and depending on the ranking awarded as per conditions (a) and (b)
+      // stars are made black to give either 2 star or 1 star ratings.
+      if (numberOfMoves >16 && numberOfMoves < 25) {
+        var thirdStarBlack =$('.stars').find('li').eq(2);
+        thirdStarBlack.css('color','black');
+      }
+      if (numberOfMoves > 25) {
+        var secondStarBlack =$('.stars').find('li').eq(1);
+        secondStarBlack.css('color','black');
+      }
+      // Conditional loop to check whether the numberOfCardsDisplayed and the
+      // shuffledCards.length paramets are equal; if yes that means the game is
+      // complete as all the cards have been matched.
+      // If condition has been satisfied then the timer variable in the runTimer()
+      // function i.e. stopwatch is stopped and the popup is activated.
 
-        clearInterval(timer);
+      if (numberOfCardsDisplayed === shuffledCards.length){
+        clearTimeout(timer);
         $('.modal').css('display','block');
         modalDisplayParameters();
       }
