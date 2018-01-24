@@ -5,6 +5,24 @@ $(document).ready(function () {
   "fa fa-cube","fa fa-anchor","fa fa-leaf","fa fa-bicycle",
   "fa fa-diamond","fa fa-bomb","fa fa-leaf","fa fa-bomb",
   "fa fa-bolt","fa fa-bicycle","fa fa-paper-plane-o","fa fa-cube"];
+  // VARIABLE DEFINITION:
+  // (a) displayedCards: List used to store the attributes of the 2 user selected
+  //     cards from the deck.
+  // (b) cardDeckPosition: List used to store the position of the card in the deck.
+  // (c) cardsTurnedOver: Variable used to keep count of the number of cards turned
+  //     over at any one time.
+  // (d) numberOfMoves: Variable used to indicate number of moves made while playing
+  //     the game.
+  // (e) numberOfCardsDisplayed: Variable used to indicate the number of cards displayed.
+  // (f) Pre-fdefinition of the secondsFormatted, minutesFormatted and
+  //     hoursFormatted variables used to store related formatted quantities.
+  var displayedCards = [];
+  var cardDeckPosition = [];
+  var cardsTurnedOver = 0;
+  var numberOfMoves = 0;
+  var numberOfCardsDisplayed = 0;
+  var secondsFormatted, minutesFormatted, hoursFormatted = 0;
+  var timeElapsedInSeconds = 0;
   // Shuffle function from http://stackoverflow.com/a/2450976
   function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -27,35 +45,40 @@ $(document).ready(function () {
     }
     return array;
   }
-  // setStopwatch() function used to format time elapsed with zero's where
+  // timeIntervalFormatted() function used to format time elapsed with zero's where
   // needed. Accepts the relevant time interval in either hours, minutes,
-  // or seconds and formats it accordingly.
+  // or seconds and returns appropriate format accordingly.
 
-  function setStopwatch(timeInterval) {
-    return ((timeInterval < 10 ? "0" : "") + timeInterval);
+  function timeIntervalFormatted(timeInterval) {
+    return (( timeInterval < 10 ? "0" : "" ) + timeInterval);
   }
-  // runTimer() function used to determine how much time has elapsed since game
-  // play has commenced. runTimer() returns the time elapsed in the ttext format:
-  // HOURS : MINUTES : SECONDS for eg: 00:01:07.
-  function runTimer() {
-    // Using Date.now() to get current timestamp
-    var startTime = Date.now();
-    // declaring setInterval fucntion variable timer which will run every 1000
-    // milliseconds or 1 second.
-    timer = setInterval(function () {
-      var timeElapsed = Date.now() - startTime;
-      console.log("time elapsed:", timeElapsed);
-      hoursFormatted = setStopwatch(Math.floor(timeElapsed / 3600000));
-      minutesFormatted = setStopwatch(Math.floor(((timeElapsed / 60000)) % 60));
-      secondsFormatted = setStopwatch(Math.floor(((timeElapsed / 1000)) % 60));
-      console.log("hours formatted:", hoursFormatted);
-      console.log("minutes formatted:", minutesFormatted);
-      console.log("seconds formatted:", secondsFormatted);
-      // Compose the string for display
-      var currentTimeString = hoursFormatted + ":" + minutesFormatted + ":" + secondsFormatted;
-      console.log("time formatted:", currentTimeString);
-      return currentTimeString;
-    }, 1000);
+  // timeElapsed() function used to determine how much time has elapsed since game
+  // play has commenced. timeElapsed() returns the time elapsed in the text format:
+  // HOURS : MINUTES : SECONDS for eg: 00:01:07. Accepts the variable timeElapsedInSeconds 
+  // from where it is declared within the main card click handler function.
+  
+  // Function obtained from: https://stackoverflow.com/questions/2604450/how-to-create-a-jquery-clock-timer
+  function timeElapsed(timeElapsedInSeconds) {
+  
+  var hours = Math.floor(timeElapsedInSeconds / 3600);
+  timeElapsedInSeconds %= 3600;
+
+  var minutes = Math.floor(timeElapsedInSeconds / 60);
+  timeElapsedInSeconds %= 60;
+
+  var seconds = Math.floor(timeElapsedInSeconds);
+
+  // Pad the hours, minutes and seconds with leading zeros if required by calling the 
+  // timeIntervalFormatted() function.
+  var hoursFormatted = timeIntervalFormatted(hours);
+  var minutesFormatted = timeIntervalFormatted(minutes);
+  var secondsFormatted = timeIntervalFormatted(seconds);
+
+  // Compose the string for display
+  var currentTimeString = hoursFormatted + ":" + minutesFormatted + ":" + secondsFormatted;
+
+  return currentTimeString;
+}
   }
   // modalDisplayParameters() function that is used to display the star rating,
   // number of moves counter, time taken to complete game and finally restart
@@ -88,28 +111,18 @@ $(document).ready(function () {
   for (var i = 0; i < shuffledCards.length; i++) {
     $('.deck .card').children().eq(i).addClass(shuffledCards[i]);
   }
-  // VARIABLE DEFINITION:
-  // (a) displayedCards: List used to store the attributes of the 2 user selected
-  //     cards from the deck.
-  // (b) cardDeckPosition: List used to store the position of the card in the deck.
-  // (c) cardsTurnedOver: Variable used to keep count of the number of cards turned
-  //     over at any one time.
-  // (d) numberOfMoves: Variable used to indicate number of moves made while playing
-  //     the game.
-  // (e) numberOfCardsDisplayed: Variable used to indicate the number of cards displayed.
-  // (f) Pre-fdefinition of the secondsFormatted, minutesFormatted and
-  //     hoursFormatted variables used to store related formatted quantities.
-  var displayedCards = [];
-  var cardDeckPosition = [];
-  var cardsTurnedOver = 0;
-  var numberOfMoves = 0;
-  var numberOfCardsDisplayed = 0;
-  var secondsFormatted, minutesFormatted, hoursFormatted;
+  
 
   //Event handler function to flip open a card when clicked.
   $('.card').click(function (event) {
-    // Simultaneously calls runTimer() function and displays its output.
-    $('.score-panel .timer').text(runTimer());
+    // Simultaneously calls the variable timer, which in turn calls the setInterval() method which simultaneously :
+    // (a) calls the function timeElapsed() accepting the incremented by 1 variable timeElapsedInSeconds;
+    // (b) outputs the formatted time elapsed in the text format HH:MM:SS.
+  
+    var timer = setInterval(function() {
+      timeElapsedInSeconds++;
+      $('.score-panel .timer').text(timeElapsed(timeElapsedInSeconds));
+    }, 1000);
 
     // Conditional loop to ensure that:
     // (a) no more than 2 cards are opened at a given time;
@@ -213,7 +226,7 @@ $(document).ready(function () {
       // function i.e. stopwatch is stopped and the popup is activated.
 
       if (numberOfCardsDisplayed === shuffledCards.length){
-        clearTimeout(timer);
+        clearInterval(timer);
         $('.modal').css('display','block');
         modalDisplayParameters();
       }
