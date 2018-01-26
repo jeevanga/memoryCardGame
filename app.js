@@ -149,10 +149,11 @@ $(document).ready(function() {
       }
   numberOfMoves = 0;
  };
-  
+
   function replayGame() {
+    $(".modal").css("display", "none");
   resetGame();
-  $(".modal").css("display", "none");
+
 };
   var shuffledCards = [];
   shuffledCards = shuffle(deckOfCards);
@@ -314,7 +315,7 @@ $(document).ready(function() {
           .eq(1);
         secondStarBlack.css("color", "black");
       }
-      
+
     }
     // Conditional loop to check whether the numberOfCardsDisplayed and the
       // shuffledCards.length parameters are equal; if yes that means the game is
@@ -324,13 +325,13 @@ $(document).ready(function() {
 
       if (numberOfCardsDisplayed === shuffledCards.length) {
         clearTimeout(timer);
-        
+
         $(".modal").css("display", "block");
         modalDisplayParameters();
       }
 
 $(".restart").click(resetGame);
-$(".modal-message").click(replayGame);
+$(".modal-message-replay").click(resetGame);
 
   });
 
