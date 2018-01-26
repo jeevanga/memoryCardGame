@@ -129,10 +129,11 @@ div, h2, p, span {
 }
 
 
-.modal-message {
+.modal-message-replay {
     font-size: 1em;
     font-weight: 25;
     text-align: center;
+    cursor: pointer;
 }
 
 
