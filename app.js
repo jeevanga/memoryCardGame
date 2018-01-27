@@ -28,8 +28,9 @@ $(document).ready(function() {
   // (d) numberOfMoves: Variable used to indicate number of moves made while playing
   //     the game.
   // (e) numberOfCardsDisplayed: Variable used to indicate the number of cards displayed.
-  // (f) Pre-fdefinition of the secondsFormatted, minutesFormatted and
+  // (f) Pre-definition of the secondsFormatted, minutesFormatted and
   //     hoursFormatted variables used to store related formatted quantities.
+  // (g) timeElapsedInSeconds: Variable used to store number of seconds elapsed.
   var displayedCards = [];
   var cardDeckPosition = [];
   var cardsTurnedOver = 0;
@@ -57,7 +58,6 @@ $(document).ready(function() {
     var currentIndex = array.length,
       temporaryValue,
       randomIndex;
-
     while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
@@ -67,10 +67,10 @@ $(document).ready(function() {
     }
     return array;
   }
-
-  // Creating the HTML element titled "deck" which contains all the cards
+  // deckHTMLLayout() function used to create the HTML element titled
+  // "deck" which contains all the cards.
   function deckHTMLLayout() {
-    // Running a loop the length of the 'shuffledCards' array number of times to:
+    // Running a loop the length of the 'deckOfCards' array to:
     // (a) Add each card's HTML to the "deck" class.
     // (b) Add a data* attribute called cardDeckPosition that assigns the loop
     //     counter 'i' to each list element.
@@ -82,10 +82,13 @@ $(document).ready(function() {
       });
     }
   }
-
+  // cardAssignmentToDeck() function used to assign each of the shuffled cards
+  // in the 'shuffledCards' array to each of the <i> HTML tags through a for loop.
   function cardAssignmentToDeck() {
-    // Assigning each of the shuffled cards in the 'shuffledCards' array to each
-    // of the <i> HTML tags through a for loop.
+    // Assigning the shuffled 'deckOfCards' array (outputted from 'shuffle' function)
+    // to the 'shuffledCards' array and running a loop the length of the 'deckOfCards' array to
+    // assign each of the shuffled cards in the 'shuffledCards' array to each
+    // of the <i> HTML tags through a for loop
     var shuffledCards = [];
     shuffledCards = shuffle(deckOfCards);
     for (var i = 0; i < deckOfCards.length; i++) {
@@ -95,7 +98,6 @@ $(document).ready(function() {
         .addClass(shuffledCards[i]);
     }
   }
-
   // timeIntervalFormatted() function used to format time elapsed with zero's where
   // needed. Accepts the relevant time interval in either hours, minutes,
   // or seconds and returns appropriate format accordingly.
@@ -106,34 +108,32 @@ $(document).ready(function() {
   // play has commenced. timeElapsed() returns the time elapsed in the text format:
   // HOURS : MINUTES : SECONDS for eg: 00:01:07. Accepts the variable timeElapsedInSeconds
   // from where it is declared within the main card click handler function.
-
   // Function obtained from: https://stackoverflow.com/questions/2604450/how-to-create-a-jquery-clock-timer
   function timeElapsed(timeElapsedInSeconds) {
     hours = Math.floor(timeElapsedInSeconds / 3600);
     timeElapsedInSeconds %= 3600;
-
     minutes = Math.floor(timeElapsedInSeconds / 60);
     timeElapsedInSeconds %= 60;
-
     seconds = Math.floor(timeElapsedInSeconds);
-
     // Pad the hours, minutes and seconds with leading zeros if required by calling the
     // timeIntervalFormatted() function.
     var hoursFormatted = timeIntervalFormatted(hours);
     var minutesFormatted = timeIntervalFormatted(minutes);
     var secondsFormatted = timeIntervalFormatted(seconds);
-
     // Compose the string for display
     var currentTimeString =
-      hoursFormatted + ":" + minutesFormatted + ":" + secondsFormatted;
-
+    hoursFormatted + ":" + minutesFormatted + ":" + secondsFormatted;
     return currentTimeString;
   }
+  // timer() function whic in turn calls the setInterval() method which simultaneously :
+  // (a) calls the function timeElapsed() accepting the incremented-by-1
+  //     variable timeElapsedInSeconds;
+  // (b) outputs the formatted time elapsed in the text format HH:MM:SS.
+  // Refer (d) in https://discussions.udacity.com/t/help-needed-with-the-front-end-inpd-final-project/538486/2
   var timer = setInterval(function() {
         timeElapsedInSeconds++;
         $(".score-panel .timer").text(timeElapsed(timeElapsedInSeconds));
-      }, 1000);
-
+  }, 1000);
   // modalDisplayParameters() function that is used to display the star rating,
   // number of moves counter, time taken to complete game and finally restart
   // all in one popup i.e. the congratulations popup.
@@ -148,26 +148,10 @@ $(document).ready(function() {
       .clone()
       .appendTo($(".modal-timer-element"));
   }
-
   deckHTMLLayout();
   cardAssignmentToDeck();
-  //Event handler function to flip open a card when clicked, which...
+  //Event handler function to flip open a card when clicked.
   $(".card").click(function(event) {
-    // ...initiates a conditional loop that ascertains that the timer function
-    // is only activated the very first time a card is clicked and ONLY at
-    // this time i.e. loop ensures that the setInterval function is not called
-    // activated everytime a card is clicked.
-    // Refer (d) in https://discussions.udacity.com/t/help-needed-with-the-front-end-inpd-final-project/538486/2
-    // Simultaneously calls the variable timer, which in turn calls the
-    // setInterval() method which simultaneously :
-    // (a) calls the function timeElapsed() accepting the incremented-by-1
-    //     variable timeElapsedInSeconds;
-    // (b) outputs the formatted time elapsed in the text format HH:MM:SS.
-
-    if (timeElapsedInSeconds === 0) {
-
-    }
-
     // Conditional loop to ensure that:
     // (a) no more than 2 cards are opened at a given time;
     // (b) the card selected is not already turned over i.e. has
@@ -285,13 +269,11 @@ $(document).ready(function() {
     }
     // Conditional loop to check whether the numberOfCardsDisplayed and the
     // shuffledCards.length parameters are equal; if yes that means the game is
-    // complete as all the cards have been matched.
-    // If condition has been satisfied then the timer variable in the runTimer()
+    // complete as all the cards have been matched. If condition has been
+    // satisfied then the timer variable in the runTimer()
     // function i.e. stopwatch is stopped and the popup is activated.
-
     if (numberOfCardsDisplayed === deckOfCards.length) {
       clearInterval(timer);
-
       $(".modal").css("display", "block");
       modalDisplayParameters();
     }
