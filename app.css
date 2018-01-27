@@ -1,13 +1,11 @@
 html {
     box-sizing: border-box;
 }
-
 *,
 *::before,
 *::after {
     box-sizing: inherit;
 }
-
 body {
     padding-top: 20px;
 }
@@ -26,18 +24,14 @@ body {
     align-items: center;
     flex-direction: column;
 }
-
 .container-header {
 
     font-family: "Guardian Egyptian Headline", Georgia, serif;
     font-size: 25px;
     text-align: center;
     color: white;
-
     flex-wrap: wrap;
-
 }
-
 div, h2, p, span {
    font-family: "Guardian Egyptian Text", Georgia, serif;
    line-height: 1.5
@@ -45,7 +39,6 @@ div, h2, p, span {
 /*
  * Styles for the deck of cards
  */
-
 .deck {
     width: 660px;
     min-height: 680px;
@@ -59,7 +52,6 @@ div, h2, p, span {
     align-items: center;
     margin: 0 0 3em;
 }
-
 .deck .card {
     height: 125px;
     width: 125px;
@@ -73,12 +65,10 @@ div, h2, p, span {
     align-items: center;
     box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
 }
-
 .deck .card:hover {
     background-color: #EEE;
     cursor: pointer;
 }
-
 .deck .card.open {
     font-size: 33px;
     transform: rotateY(0);
@@ -86,19 +76,15 @@ div, h2, p, span {
     display: flex;
     cursor: default;
     align-items: center;
-
 }
-
 .deck .card.show {
     font-size: 33px;
 }
-
 .deck .card.match {
     cursor: default;
     background: #02ccba;
     font-size: 33px;
 }
-
 /*
  * Styles for the Pop up
  */
@@ -111,7 +97,6 @@ div, h2, p, span {
     position: fixed;
     background-color: rgba(0,0,0,0.6);
 }
-
 .modal-content {
     max-width: 360px;
     padding : 40px;
@@ -120,50 +105,39 @@ div, h2, p, span {
     background-color: cyan;
 
 }
-
 .modal-title {
     text-align: center;
     text-transform: uppercase;
     margin: 0;
     font-weight: 400;
 }
-
-
+.modal-star-display-element .stars li{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: inline-flex;
+    color: gold;
+}
 .modal-message-replay {
-    font-size: 1em;
-    font-weight: 25;
     text-align: center;
     cursor: pointer;
 }
-
-
 /*
  * Styles for the Score Panel
  */
-
 .score-panel {
     background-color: white;
     text-align: center;
     width: 500px;
     margin-bottom: 10px;
 }
-
 .score-panel .stars {
     margin: 0;
     padding: 0;
-    display: inline-block;
-    margin: 0 5px 0 0;
-}
-
-.score-panel .stars li,
- .modal .modal-content .modal-star-display-element {
+    display: inline-flex;
     list-style: none;
     color: gold;
-    line-height: 25px;
-    display: inline-block;
-    align-items: center;
 }
-
 .score-panel .restart {
     float: right;
     cursor: pointer;
