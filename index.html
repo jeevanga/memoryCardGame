@@ -1,4 +1,3 @@
-<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -11,7 +10,6 @@
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body class="primary-background">
-
   <!-- http://fontawesome.io/cheatsheet/ - fa refers to Font Awesome
   - font and icon toolkit. You can place Font Awesome icons just about
   anywhere using the CSS Prefix [fa] and the icon's name. Font Awesome
@@ -21,9 +19,9 @@
   </div>
   <div class="container">
 
+    <!-- Modal class definition containing elements of the 'Congratulations' popup -->
     <div class="modal">
       <div class="modal-content">
-
 
         <h1 class="modal-title"><b>NICELY DONE!</b></h1>
         <div class="modal-timer-element">
@@ -32,13 +30,13 @@
         <div class="modal-move-counter-element">
           <span>Moves :</span>
         </div>
-        <div class="modal-star-display-element">
-          <span> Stars :</span>
+        <div>
+          <span  class="modal-star-display-element">Stars:  </span>
         </div>
-        <span class="modal-message-replay"> Click here to play again </span>
+        <span class="modal-message-replay" onclick="location.reload(true);"><b><em> Click here to play again!</em></b></span>
       </div>
     </div>
-
+    
     <div class="score-panel">
       <ul class="stars">
         <li><i class="fa fa-star"></i></li>
@@ -49,7 +47,7 @@
       <span class="moves">0</span> Moves
       <span class="timer">00:00:00</span>
       <div class="restart">
-        <i class="fa fa-repeat">RESTART</i>
+        <i class="fa fa-repeat" onclick="location.reload(true);">RESTART</i>
       </div>
     </div>
 
