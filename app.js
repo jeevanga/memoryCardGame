@@ -43,11 +43,7 @@ $(document).ready(function() {
     hours = 0;
   var timeElapsedInSeconds = 0;
   // Shuffle function from http://stackoverflow.com/a/2450976
-  function shuffle(array) {
-    var currentIndex = array.length,
-      temporaryValue,
-      randomIndex;
-    /*
+  /*
   Math.random generates a number between 0 and 1, that isn't a whole number.
   To get a number, for example between 0 and 10, multiply your answer by 10:
   ==> Math.random() * 10
@@ -57,6 +53,11 @@ $(document).ready(function() {
   To get a whole number between 1 and 10, add 1 to the answer:
   ==> Math.floor(Math.random() * 10 + 1)
   */
+  function shuffle(array) {
+    var currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
+
     while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
@@ -66,10 +67,38 @@ $(document).ready(function() {
     }
     return array;
   }
+
+  // Creating the HTML element titled "deck" which contains all the cards
+  function deckHTMLLayout() {
+    // Running a loop the length of the 'shuffledCards' array number of times to:
+    // (a) Add each card's HTML to the "deck" class.
+    // (b) Add a data* attribute called cardDeckPosition that assigns the loop
+    //     counter 'i' to each list element.
+    $(".container").append('<ul class="deck"></ul>');
+    for (var i = 0; i < deckOfCards.length; i++) {
+      $(".deck").prepend('<li class="card"><i></i></li>');
+      $.each($(".deck .card"), function(i, item) {
+        $(item).attr("data-cardDeckPosition", i);
+      });
+    }
+  }
+
+  function cardAssignmentToDeck() {
+    // Assigning each of the shuffled cards in the 'shuffledCards' array to each
+    // of the <i> HTML tags through a for loop.
+    var shuffledCards = [];
+    shuffledCards = shuffle(deckOfCards);
+    for (var i = 0; i < deckOfCards.length; i++) {
+      $(".deck .card")
+        .children()
+        .eq(i)
+        .addClass(shuffledCards[i]);
+    }
+  }
+
   // timeIntervalFormatted() function used to format time elapsed with zero's where
   // needed. Accepts the relevant time interval in either hours, minutes,
   // or seconds and returns appropriate format accordingly.
-
   function timeIntervalFormatted(timeInterval) {
     return (timeInterval < 10 ? "0" : "") + timeInterval;
   }
@@ -100,12 +129,16 @@ $(document).ready(function() {
 
     return currentTimeString;
   }
+  var timer = setInterval(function() {
+        timeElapsedInSeconds++;
+        $(".score-panel .timer").text(timeElapsed(timeElapsedInSeconds));
+      }, 1000);
 
   // modalDisplayParameters() function that is used to display the star rating,
   // number of moves counter, time taken to complete game and finally restart
   // all in one popup i.e. the congratulations popup.
   function modalDisplayParameters() {
-    $(".stars li")
+    $(".score-panel .stars")
       .clone()
       .appendTo($(".modal-star-display-element"));
     $(".moves")
@@ -114,71 +147,11 @@ $(document).ready(function() {
     $(".timer")
       .clone()
       .appendTo($(".modal-timer-element"));
-    $(".modal-message").click(function() {
-      replayGame();
-    });
   }
 
-  function resetGame() {
-  displayedCards = [];
-  cardDeckPosition = [];
-  var shuffledCards = [];
-  shuffledCards = shuffle(deckOfCards);
-  cardsTurnedOver = 0;
-  numberOfCardsDisplayed = 0;
-  var secondsFormatted,
-    minutesFormatted,
-    hoursFormatted = 0;
-  var seconds,
-    minutes,
-    hours = 0;
-  var timeElapsedInSeconds = 0;
-    $(".score-panel .timer").text(timeElapsed(timeElapsedInSeconds));
-  $(".card").toggleClass("card");
-    if (numberOfMoves > 16 && numberOfMoves < 25) {
-     var thirdStarGold = $(".stars")
-          .find("li")
-          .eq(2);
-        thirdStarGold.css("color", "gold");
-      }
-      if (numberOfMoves > 25) {
-        var secondStarGold = $(".stars")
-          .find("li")
-          .eq(1);
-        secondStarGold.css("color", "gold");
-      }
-  numberOfMoves = 0;
- };
-
-  function replayGame() {
-    $(".modal").css("display", "none");
-  resetGame();
-
-};
-  var shuffledCards = [];
-  shuffledCards = shuffle(deckOfCards);
-  // Creating the HTML element titled "deck" which contains all the cards
-  $(".container").append('<ul class="deck"></ul>');
-  // Running a loop the length of the 'shuffledCards' array number of times to:
-  // (a) Add each card's HTML to the "deck" class.
-  // (b) Add a data* attribute called cardDeckPosition that assigns the loop
-  //     counter 'i' to each list element.
-  for (var i = 0; i < shuffledCards.length; i++) {
-    $(".deck").prepend('<li class="card"><i></i></li>');
-    $.each($(".deck .card"), function(i, item) {
-      $(item).attr("data-cardDeckPosition", i);
-    });
-  }
-  // Assigning each of the shuffled cards in the 'shuffledCards' array to each
-  // of the <i> HTML tags through a for loop.
-  for (var i = 0; i < shuffledCards.length; i++) {
-    $(".deck .card")
-      .children()
-      .eq(i)
-      .addClass(shuffledCards[i]);
-  }
-
- //Event handler function to flip open a card when clicked, which...
+  deckHTMLLayout();
+  cardAssignmentToDeck();
+  //Event handler function to flip open a card when clicked, which...
   $(".card").click(function(event) {
     // ...initiates a conditional loop that ascertains that the timer function
     // is only activated the very first time a card is clicked and ONLY at
@@ -192,10 +165,7 @@ $(document).ready(function() {
     // (b) outputs the formatted time elapsed in the text format HH:MM:SS.
 
     if (timeElapsedInSeconds === 0) {
-      var timer = setInterval(function() {
-        timeElapsedInSeconds++;
-        $(".score-panel .timer").text(timeElapsed(timeElapsedInSeconds));
-      }, 1000);
+
     }
 
     // Conditional loop to ensure that:
@@ -292,10 +262,7 @@ $(document).ready(function() {
           }, 600);
         }
       }
-      // Click handler function to reload the game while in progress.
-      $(".restart").click(function() {
-        location.reload();
-      });
+
       // Conditional loops to determine star ratings dependent on number of
       // moves taken to complete game.
       // (a) If number of moves are between 16 and 25: 2 star rating,
@@ -315,26 +282,18 @@ $(document).ready(function() {
           .eq(1);
         secondStarBlack.css("color", "black");
       }
-
     }
     // Conditional loop to check whether the numberOfCardsDisplayed and the
-      // shuffledCards.length parameters are equal; if yes that means the game is
-      // complete as all the cards have been matched.
-      // If condition has been satisfied then the timer variable in the runTimer()
-      // function i.e. stopwatch is stopped and the popup is activated.
+    // shuffledCards.length parameters are equal; if yes that means the game is
+    // complete as all the cards have been matched.
+    // If condition has been satisfied then the timer variable in the runTimer()
+    // function i.e. stopwatch is stopped and the popup is activated.
 
-      if (numberOfCardsDisplayed === shuffledCards.length) {
-        clearTimeout(timer);
+    if (numberOfCardsDisplayed === deckOfCards.length) {
+      clearInterval(timer);
 
-        $(".modal").css("display", "block");
-        modalDisplayParameters();
-      }
-
-$(".restart").click(resetGame);
-$(".modal-message-replay").click(resetGame);
-
+      $(".modal").css("display", "block");
+      modalDisplayParameters();
+    }
   });
-
-// Provides a randomized game board on page load
-//$(updateCards);
 });
