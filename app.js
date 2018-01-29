@@ -133,10 +133,10 @@ $(document).ready(function() {
   //     variable timeElapsedInSeconds;
   // (b) outputs the formatted time elapsed in the text format HH:MM:SS.
   // Refer (d) in https://discussions.udacity.com/t/help-needed-with-the-front-end-inpd-final-project/538486/2
-  var timer = setInterval(function() {
+  function timer() {
         timeElapsedInSeconds++;
         $(".score-panel .timer").text(timeElapsed(timeElapsedInSeconds));
-  }, 1000);
+  };
   // modalDisplayParameters() function that is used to display the star rating,
   // number of moves counter, time taken to complete game and finally restart
   // all in one popup i.e. the congratulations popup.
@@ -155,10 +155,13 @@ $(document).ready(function() {
   cardAssignmentToDeck();
   //Event handler function that initiates checking processes when user flips open a card when clicked.
   $(".card").click(function(event) {
+    if (timeElapsedInSeconds == 0) {
+      setInterval(function(){ timer() }, 1000);
+    }
     // Conditional loop to ensure that:
     // (a) no more than 2 cards are opened at a given time;
     // (b) the card selected is not already turned over i.e. avoids
-    //     double-clicking same card.
+    //     selectong card that is already opened.
     if (
       cardsTurnedOver < 2 &&
       !$(this)
@@ -226,7 +229,7 @@ $(document).ready(function() {
           // if the cards do not match then they will be flipped over.
           // The moves counter is updated accordingly.
           $(".moves").text(numberOfMoves);
-        } else {
+        } else if (cardDeckPosition[0] !== cardDeckPosition[1]) {
           setTimeout(function() {
             // As the chosen cards do not match, their css state is altered so that
             // the card image is no longer visible after 600ms - 0.6 seconds.
@@ -248,6 +251,24 @@ $(document).ready(function() {
             cardsTurnedOver = 0;
             // The moves counter is updated accordingly.
             $(".moves").text(numberOfMoves);
+          });
+                     } else {
+          setTimeout(function() {
+            // As the chosen cards do not match, their css state is altered so that
+            // the card image is no longer visible after 600ms - 0.6 seconds.
+            $(".card")
+              .filter(".open")
+              .removeClass()
+              .addClass("card");
+            // The 'displayedCards' array is re-initialised for the next iteration
+            // of card selection.
+            displayedCards = [];
+            // The 'cardDeckPosition' array is re-initialised for the next iteration
+            // of card selection.
+            cardDeckPosition = [];
+            // The 'cardsTurnedOver' variable is re-initialised for the next iteration
+            // of card selection.
+            cardsTurnedOver = 0;
           }, 600);
         }
       }
