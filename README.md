@@ -38,3 +38,4 @@ In addition to these functions the following loops are used to check for the fol
 (a) To determine star ratings dependent on number of moves taken to complete game.
 (b) To check whether the game has been completed (numberOfCardsDisplayed and the deckOfcards.length parameters are equal; if yes that means the game is complete as all the cards have been matched. If condition has been satisfied then timer is stopped and the congratulations popup is activated.
 
+
