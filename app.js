@@ -30,9 +30,6 @@ $(document).ready(function() {
   // (e) numberOfCardsDisplayed: Variable used to indicate the number of cards displayed.
   // (f) Pre-definition of the secondsFormatted, minutesFormatted and
   //     hoursFormatted variables used to store related formatted quantities.
-  // (g) Pre-definition of the seconds, minutes and
-  //     hours variables used to store related quantities obtained after relevant calculations
-  //     have been performed on timeElapsedInSeconds quantity.
   // (g) timeElapsedInSeconds: Variable used to store number of seconds elapsed.
   var displayedCards = [];
   var cardDeckPosition = [];
@@ -46,6 +43,7 @@ $(document).ready(function() {
     minutes,
     hours = 0;
   var timeElapsedInSeconds = 0;
+  var timer;
   // Shuffle function from http://stackoverflow.com/a/2450976
   /*
   Math.random generates a number between 0 and 1, that isn't a whole number.
@@ -128,15 +126,18 @@ $(document).ready(function() {
     hoursFormatted + ":" + minutesFormatted + ":" + secondsFormatted;
     return currentTimeString;
   }
-  // timer() function which in turn calls the setInterval() method which simultaneously :
+  // timer() function whic in turn calls the setInterval() method which simultaneously :
   // (a) calls the function timeElapsed() accepting the incremented-by-1
   //     variable timeElapsedInSeconds;
   // (b) outputs the formatted time elapsed in the text format HH:MM:SS.
   // Refer (d) in https://discussions.udacity.com/t/help-needed-with-the-front-end-inpd-final-project/538486/2
-  function timer() {
+
+  function runTimer() {
+    timer = setInterval(function() {
         timeElapsedInSeconds++;
         $(".score-panel .timer").text(timeElapsed(timeElapsedInSeconds));
-  };
+  }, 1000);
+}
   // modalDisplayParameters() function that is used to display the star rating,
   // number of moves counter, time taken to complete game and finally restart
   // all in one popup i.e. the congratulations popup.
@@ -153,15 +154,17 @@ $(document).ready(function() {
   }
   deckHTMLLayout();
   cardAssignmentToDeck();
-  //Event handler function that initiates checking processes when user flips open a card when clicked.
+  var booleanValue = 0;
+  //Event handler function to flip open a card when clicked.
   $(".card").click(function(event) {
-    if (timeElapsedInSeconds == 0) {
-      setInterval(function(){ timer() }, 1000);
+    if (timeElapsedInSeconds === 0 && !booleanValue) {
+      booleanValue = 1;
+      runTimer();
     }
     // Conditional loop to ensure that:
     // (a) no more than 2 cards are opened at a given time;
-    // (b) the card selected is not already turned over i.e. avoids
-    //     selectong card that is already opened.
+    // (b) the card selected is not already turned over i.e. has
+    //     it's image hidden.
     if (
       cardsTurnedOver < 2 &&
       !$(this)
@@ -227,7 +230,6 @@ $(document).ready(function() {
           cardsTurnedOver = 0;
           // Conditional statement following on from card equality check above;
           // if the cards do not match then they will be flipped over.
-          // The moves counter is updated accordingly.
           $(".moves").text(numberOfMoves);
         } else if (cardDeckPosition[0] !== cardDeckPosition[1]) {
           setTimeout(function() {
@@ -251,11 +253,11 @@ $(document).ready(function() {
             cardsTurnedOver = 0;
             // The moves counter is updated accordingly.
             $(".moves").text(numberOfMoves);
-          });
-                     } else {
+          }, 600);
+        } else {
           setTimeout(function() {
             // As the chosen cards do not match, their css state is altered so that
-            // the card image is no longer visible after 600ms - 0.6 seconds.
+            // the card image is no longer visible.
             $(".card")
               .filter(".open")
               .removeClass()
@@ -269,6 +271,7 @@ $(document).ready(function() {
             // The 'cardsTurnedOver' variable is re-initialised for the next iteration
             // of card selection.
             cardsTurnedOver = 0;
+            $(".moves").text(numberOfMoves);
           }, 600);
         }
       }
@@ -294,7 +297,7 @@ $(document).ready(function() {
       }
     }
     // Conditional loop to check whether the numberOfCardsDisplayed and the
-    // deckOfCards.length parameters are equal; if yes that means the game is
+    // shuffledCards.length parameters are equal; if yes that means the game is
     // complete as all the cards have been matched. If condition has been
     // satisfied then the timer variable in the runTimer()
     // function i.e. stopwatch is stopped and the popup is activated.
