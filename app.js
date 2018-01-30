@@ -31,6 +31,8 @@ $(document).ready(function() {
   // (f) Pre-definition of the secondsFormatted, minutesFormatted and
   //     hoursFormatted variables used to store related formatted quantities.
   // (g) timeElapsedInSeconds: Variable used to store number of seconds elapsed.
+  // (h) timer: Variable used to store intervalID from the setInterval function
+  //     in the runTimer() function.
   var displayedCards = [];
   var cardDeckPosition = [];
   var cardsTurnedOver = 0;
@@ -126,11 +128,13 @@ $(document).ready(function() {
     hoursFormatted + ":" + minutesFormatted + ":" + secondsFormatted;
     return currentTimeString;
   }
-  // timer() function whic in turn calls the setInterval() method which simultaneously :
+  // runTimer() function which in turn calls the setInterval() method,
+  // assigned to variable 'timer', which simultaneously :
   // (a) calls the function timeElapsed() accepting the incremented-by-1
   //     variable timeElapsedInSeconds;
   // (b) outputs the formatted time elapsed in the text format HH:MM:SS.
   // Refer (d) in https://discussions.udacity.com/t/help-needed-with-the-front-end-inpd-final-project/538486/2
+  // Note: https://stackoverflow.com/questions/109086/stop-setinterval-call-in-javascript
 
   function runTimer() {
     timer = setInterval(function() {
@@ -201,7 +205,7 @@ $(document).ready(function() {
         // For the cards to match the following 2 conditions must be satisfied:
         // (a) The card attributes i.e. icon names must match;
         // (b) The positions of the selected cards must not be the same. This check
-        //     ensures that the same card is not clicked twice thereby.
+        //     ensures that the same card is not clicked twice and hence creates a 'match'.
         if (
           displayedCards[0] === displayedCards[1] &&
           cardDeckPosition[0] !== cardDeckPosition[1]
@@ -229,7 +233,8 @@ $(document).ready(function() {
           // of card selection.
           cardsTurnedOver = 0;
           // Conditional statement following on from card equality check above;
-          // if the cards do not match then they will be flipped over.
+          // if the cards do not match then they will be flipped over - move counter
+          // is incremented only if different cards are selected in current selection iteration.
           $(".moves").text(numberOfMoves);
         } else if (cardDeckPosition[0] !== cardDeckPosition[1]) {
           setTimeout(function() {
@@ -257,7 +262,10 @@ $(document).ready(function() {
         } else {
           setTimeout(function() {
             // As the chosen cards do not match, their css state is altered so that
-            // the card image is no longer visible.
+            // the card image is no longer visible. This extra condition is used to
+            // account for the possibiliity that the user may be clicking same card 'n'
+            // number of times repeatedly. Hence in this else branch moves counter
+            // is not updated.
             $(".card")
               .filter(".open")
               .removeClass()
